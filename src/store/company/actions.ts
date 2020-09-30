@@ -55,7 +55,7 @@ export const fetchCompanies = (page: Number = 0, itemPerPage: Number = 10): Thun
     }
     let payload: CompanyState = {
       contentState: LoadingState.Loaded,
-      items: response.data.content.map((c: Company) => ({
+      items: response.data.content.map((c: Company) : Company => ({
         id: c.id,
         name: c.name,
         employees: employeeInitialState
