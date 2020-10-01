@@ -9,7 +9,7 @@ export const initialState: EmployeeState = {
   companyId: 0,
   items: [],
   page: 0,
-  size: 10,
+  itemsPerPage: 10,
   contentState: LoadingState.NotLoaded,
   total: 0
 };

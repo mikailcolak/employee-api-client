@@ -11,7 +11,7 @@ export const initialState: CompanyState = {
   contentState: LoadingState.NotLoaded,
   items: [],
   page: 0,
-  size: 10,
+  itemsPerPage: 10,
   total: 0
 };
 
