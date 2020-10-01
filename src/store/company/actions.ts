@@ -11,6 +11,9 @@ import axios from "axios";
 import config from "../../config";
 import { initialState as employeeInitialState } from "../employee/reducers";
 
+const getCompanies = (page: Number = 0, itemPerPage: Number = 10) =>
+  axios.get(`${config.apiEndpoint}companies/?size=${itemPerPage}&page=${page}`);
+
 function companiesFetched(payload: CompanyState): CompanyActionTypes {
   return {
     type: CompanyActions.COMPANIES_FETCHED,
@@ -61,7 +64,7 @@ export const fetchCompanies = (page: Number = 0, itemPerPage: Number = 10): Thun
         employees: employeeInitialState
       })),
       page: page,
-      size: itemPerPage,
+      itemsPerPage: itemPerPage,
       total: response.data.length // TODO: [FIXME] get the total amount of items from API
     }
 
@@ -71,10 +74,6 @@ export const fetchCompanies = (page: Number = 0, itemPerPage: Number = 10): Thun
   }
 };
 
-function getCompanies(page: Number = 0, itemPerPage: Number = 10) {
-  return axios.get(`${config.apiEndpoint}companies/?size=${itemPerPage}&page=${page}`);
-}
-
 // eslint-disable-next-line
 function mockApiCall(page: Number = 0, itemPerPage: Number = 10) {
   return new Promise<CompanyState>((r) => {
@@ -83,7 +82,7 @@ function mockApiCall(page: Number = 0, itemPerPage: Number = 10) {
         r({
           contentState: LoadingState.Loaded,
           page,
-          size: itemPerPage,
+          itemsPerPage: itemPerPage,
           total: 1,
           items: [{
             id: 1,
@@ -93,7 +92,7 @@ function mockApiCall(page: Number = 0, itemPerPage: Number = 10) {
               contentState: LoadingState.NotLoaded,
               items: [],
               page: 0,
-              size: 10,
+              itemsPerPage: 10,
               total: 0
             },
           }]

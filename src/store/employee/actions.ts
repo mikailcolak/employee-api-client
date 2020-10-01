@@ -10,6 +10,9 @@ import { LoadingState } from "../common-types";
 import axios from "axios";
 import config from "../../config";
 
+const getEmployeesByCompanyId = (companyId: Number, page: Number = 0, itemsPerPage: Number = 10) =>
+  axios.get(`${config.apiEndpoint}employees/by-company-id/${companyId}?size=${itemsPerPage}&page=${page}`);
+
 function employeesFetched(payload: EmployeeState): EmployeeActionTypes {
   return {
     type: EmployeeActions.EMPLOYEES_FETCHED,
@@ -40,7 +43,7 @@ function employeesCouldNotBeFecthed(companyId: Number, error: String): EmployeeA
   };
 }
 
-export const fetchEmployees = (companyId: Number, page: Number = 0, itemPerPage: Number = 10): ThunkAction<
+export const fetchEmployees = (companyId: Number, page: Number = 0, itemsPerPage: Number = 10): ThunkAction<
   void,
   EmployeeActionTypes,
   unknown,
@@ -48,7 +51,7 @@ export const fetchEmployees = (companyId: Number, page: Number = 0, itemPerPage:
 > => async (dispatch) => {
   dispatch(employeesFetching(companyId));
   try {
-    let response = await getEmployeesByCompanyId(companyId, page, itemPerPage);
+    let response = await getEmployeesByCompanyId(companyId, page, itemsPerPage);
 
     if (response.status !== 200) {
       dispatch(employeesCouldNotBeFecthed(companyId, response.statusText));
@@ -67,7 +70,7 @@ export const fetchEmployees = (companyId: Number, page: Number = 0, itemPerPage:
         companyId: e.companyId
       })),
       page: page,
-      size: itemPerPage,
+      itemsPerPage: itemsPerPage,
       total: response.data.length // TODO: [FIXME] get the total amount of items from API
     }
 
@@ -77,11 +80,6 @@ export const fetchEmployees = (companyId: Number, page: Number = 0, itemPerPage:
   }
 };
 
-
-function getEmployeesByCompanyId(companyId: Number, page: Number = 0, itemPerPage: Number = 10) {
-  return axios.get(`${config.apiEndpoint}employees/by-company-id/${companyId}?size=${itemPerPage}&page=${page}`);
-}
-
 // eslint-disable-next-line
 function mockApiCall(companyId: Number) {
   return new Promise<EmployeeState>((r) => {
@@ -90,7 +88,7 @@ function mockApiCall(companyId: Number) {
         r({
           contentState: LoadingState.Loaded,
           page: 0,
-          size: 10,
+          itemsPerPage: 10,
           total: 1,
           companyId: companyId,
           items: [{

@@ -1,5 +1,5 @@
 export interface PagedData<T> {
-  size?: Number,
+  itemsPerPage?: Number,
   page?: Number,
   total?: Number,
   items: Array<T>
