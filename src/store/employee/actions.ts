@@ -64,7 +64,7 @@ export const fetchEmployees = (companyId: Number, page: Number = 0, itemsPerPage
     let payload: EmployeeState = {
       companyId,
       contentState: LoadingState.Loaded,
-      items: response.data.content.map((e: Employee) : Employee => ({
+      items: response.data.content.map((e: Employee): Employee => ({
         id: e.id,
         name: e.name,
         surname: e.surname,
