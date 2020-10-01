@@ -14,6 +14,9 @@ import { initialState as employeeInitialState } from "../employee/reducers";
 const getCompanies = (page: Number = 0, itemPerPage: Number = 10) =>
   axios.get(`${config.apiEndpoint}companies/?size=${itemPerPage}&page=${page}`);
 
+const count = () =>
+  axios.get(`${config.apiEndpoint}companies/count`);
+
 function companiesFetched(payload: CompanyState): CompanyActionTypes {
   return {
     type: CompanyActions.COMPANIES_FETCHED,
@@ -50,12 +53,15 @@ export const fetchCompanies = (page: Number = 0, itemPerPage: Number = 10): Thun
 > => async (dispatch) => {
   dispatch(companiesFetching());
   try {
+
+    let { data: { value: total } } = await count();
     let response = await getCompanies(page, itemPerPage);
 
     if (response.status !== 200) {
       dispatch(companiesCouldNotBeFecthed(response.statusText));
       return;
     }
+
     let payload: CompanyState = {
       contentState: LoadingState.Loaded,
       items: response.data.content.map((c: Company) : Company => ({
@@ -65,7 +71,7 @@ export const fetchCompanies = (page: Number = 0, itemPerPage: Number = 10): Thun
       })),
       page: page,
       itemsPerPage: itemPerPage,
-      total: response.data.length // TODO: [FIXME] get the total amount of items from API
+      total
     }
 
     dispatch(companiesFetched(payload));

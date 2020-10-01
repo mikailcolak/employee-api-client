@@ -13,6 +13,9 @@ import config from "../../config";
 const getEmployeesByCompanyId = (companyId: Number, page: Number = 0, itemsPerPage: Number = 10) =>
   axios.get(`${config.apiEndpoint}employees/by-company-id/${companyId}?size=${itemsPerPage}&page=${page}`);
 
+const count = () =>
+  axios.get(`${config.apiEndpoint}employees/count`);
+
 function employeesFetched(payload: EmployeeState): EmployeeActionTypes {
   return {
     type: EmployeeActions.EMPLOYEES_FETCHED,
@@ -51,6 +54,7 @@ export const fetchEmployees = (companyId: Number, page: Number = 0, itemsPerPage
 > => async (dispatch) => {
   dispatch(employeesFetching(companyId));
   try {
+    let { data: { value: total } } = await count();
     let response = await getEmployeesByCompanyId(companyId, page, itemsPerPage);
 
     if (response.status !== 200) {
@@ -71,7 +75,7 @@ export const fetchEmployees = (companyId: Number, page: Number = 0, itemsPerPage
       })),
       page: page,
       itemsPerPage: itemsPerPage,
-      total: response.data.length // TODO: [FIXME] get the total amount of items from API
+      total
     }
 
     dispatch(employeesFetched(payload));
