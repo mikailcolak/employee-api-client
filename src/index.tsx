@@ -10,6 +10,7 @@ import detect from 'browser-detect';
 
 import "normalize.css";
 import "./index.css";
+import "./table.css";
 
 async function appEntryPoint() {
 
@@ -20,7 +21,7 @@ async function appEntryPoint() {
     : ReactDOM.hydrate;
 
   if (window && window?.document?.fonts?.status !== "loaded") {
-    window.document.fonts.onloadingdone = (e: any) => {
+    window.document.fonts.onloadingdone = () => {
       store.dispatch(webFontsAreLoaded(true));
     };
   } else {

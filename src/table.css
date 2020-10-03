@@ -1,0 +1,89 @@
+table {
+  border: 0.062em solid #ccc;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+table caption {
+  font-size: 1.5em;
+  margin: .5em 0 .75em;
+}
+
+table tbody tr {
+  background-color: #f8f8f8;
+  border: 0.062em solid #ddd;
+  padding: .35em;
+}
+
+table thead tr {
+  background-color: var(--primary);
+  color: var(--light-text);
+}
+
+table th,
+table td {
+  padding: .625em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table th {
+  font-size: .85em;
+  letter-spacing: .1em;
+}
+
+table th:not(:only-child):not(:last-child) {
+  border-right: 0.062rem solid var(--light-text);
+}
+table td:not(:only-child):not(:last-child) {
+  border-right: 0.062rem solid #ccc;
+}
+
+@media screen and (max-width: 900px) {
+  table {
+    border: 0;
+  }
+
+  table caption {
+    font-size: 1.3em;
+  }
+
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 0.062em;
+    margin: -0.062em;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 0.062em;
+  }
+
+  table tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: .625em;
+  }
+
+  table td {
+    border-bottom: 0.062em solid #ddd;
+    display: block;
+    font-size: .8em;
+    text-align: right;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  table td:last-child {
+    border-bottom: 0;
+  }
+}
