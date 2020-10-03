@@ -1,0 +1,16 @@
+.company-list > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.company-list > ul > li > a {
+  display: block;
+  cursor: pointer;
+  padding: .3125em;
+}
+
+.company-list > ul > li.selected > a {
+  background-color: var(--primary);
+  color: var(--light-text);
+}
