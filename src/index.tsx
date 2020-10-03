@@ -8,7 +8,7 @@ import { webFontsAreLoaded, windowLoaded, systemDetected } from "./store/runtime
 import { updateLocation } from "./store/runtime/actions";
 import detect from 'browser-detect';
 
-
+import "normalize.css";
 import "./index.css";
 
 async function appEntryPoint() {
