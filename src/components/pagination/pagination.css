@@ -1,0 +1,26 @@
+.pagination {
+  display: flex;
+  flex-direction: row;
+}
+
+.pagination a,
+.pagination span {
+  padding: .625em;
+}
+
+.pagination a {
+  border: .0625em solid #aaa;
+  background: #f6f6f6;
+  border-radius: 4em;
+  cursor: pointer;
+  height: .625em;
+  min-width: .625em;
+  line-height: 61%;
+  text-align: center;
+}
+
+.pagination a.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--light-text);
+}
