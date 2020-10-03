@@ -1,13 +1,13 @@
 import { LoadingState } from "../common-types";
 import { employeesReducer } from "../employee/reducers";
-import { EmployeeActions, EmployeeActionTypes, EmployeeState } from "../employee/types";
+import { EmployeeActions, EmployeeActionTypes, EmployeesState } from "../employee/types";
 import {
   CompanyActions,
-  CompanyState,
+  CompaniesState,
   CompanyActionTypes,
 } from "./types";
 
-export const initialState: CompanyState = {
+export const initialState: CompaniesState = {
   contentState: LoadingState.NotLoaded,
   items: [],
   page: 0,
@@ -16,9 +16,9 @@ export const initialState: CompanyState = {
 };
 
 export function companyReducer(
-  state: CompanyState,
+  state: CompaniesState,
   action: CompanyActionTypes | EmployeeActionTypes
-): CompanyState {
+): CompaniesState {
 
   switch (action.type) {
     case CompanyActions.COMPANIES_FETCHING: {
@@ -31,33 +31,19 @@ export function companyReducer(
     case CompanyActions.COMPANIES_FETCHED: {
       return {
         ...(state || {}),
-        ...action.payload as CompanyState,
+        ...action.payload as CompaniesState,
         contentState: LoadingState.Loaded
       };
     }
 
     case CompanyActions.COMPANIES_FETCH_FAILED: {
-      let error: String = action.payload.error || "Unknown error.";
+      let error: string = action.payload.error || "Unknown error.";
 
       return {
         ...(state || {}),
         contentState: LoadingState.CouldNotBeLoaded,
         error
       };
-    }
-
-    case EmployeeActions.EMPLOYEES_FETCHING:
-    case EmployeeActions.EMPLOYEES_FETCHED:
-    case EmployeeActions.EMPLOYEES_FETCH_FAILED: {
-      let employeeState = action.payload;
-
-      if (state?.items?.some(c => c.id === employeeState?.companyId)) {
-        let company = state?.items?.find(c => c.id === employeeState?.companyId);
-        if (company) {
-          company.employees = employeesReducer(company.employees, action);
-        }
-      }
-      return {...state || {}};
     }
 
     default:

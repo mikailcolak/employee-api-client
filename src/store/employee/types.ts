@@ -1,19 +1,21 @@
-import { LoadingState, PagedData } from "../common-types";
+import { Loadable, PagedData } from "../common-types";
 
 export interface Employee {
-  id: Number,
-  name: String,
-  surname: String,
-  email: String,
-  address: String,
-  salary: Number,
-  companyId: Number,
+  id: number,
+  name: string,
+  surname: string,
+  email: string,
+  address: string,
+  salary: number,
+  companyId: number,
 }
 
-export interface EmployeeState extends PagedData<Employee> {
-  companyId: Number,
-  contentState: LoadingState,
-  error?: String,
+export interface EmployeeState extends Loadable, Employee {
+
+}
+
+export interface EmployeesState extends Loadable, PagedData<EmployeeState> {
+  companyId: number,
 }
 
 export enum EmployeeActions {
@@ -24,7 +26,7 @@ export enum EmployeeActions {
 
 export interface FetchEmployeesAction {
   type: EmployeeActions;
-  payload: EmployeeState;
+  payload: EmployeesState;
 }
 
 export type EmployeeActionTypes = FetchEmployeesAction;

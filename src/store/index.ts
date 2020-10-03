@@ -6,7 +6,8 @@ import {
   initialState as runtimeInitialState,
   runtimeReducer,
 } from "./runtime/reducers";
-import { companyReducer, initialState as companyInitialState } from "./company/reducers";
+import { companyReducer, initialState as companiesInitialState } from "./company/reducers";
+import { employeesReducer, initialState as employeesInitialState } from "./employee/reducers";
 
 export type AppState = ReturnType<typeof rootReducer>;
 
@@ -14,13 +15,15 @@ const rootReducer: Reducer = combineReducers({
   runtime: runtimeReducer,
   content: combineReducers({
     companies: companyReducer,
+    employees: employeesReducer,
   }),
 });
 
 export const appInitialState: AppState = {
   runtime: runtimeInitialState,
   content: {
-    companies: companyInitialState
+    companies: companiesInitialState,
+    employees: employeesInitialState
   }
 };
 

@@ -1,11 +1,11 @@
 import { LoadingState } from "../common-types";
 import {
   EmployeeActions,
-  EmployeeState,
+  EmployeesState,
   EmployeeActionTypes,
 } from "./types";
 
-export const initialState: EmployeeState = {
+export const initialState: EmployeesState = {
   companyId: 0,
   items: [],
   page: 0,
@@ -15,9 +15,9 @@ export const initialState: EmployeeState = {
 };
 
 export function employeesReducer(
-  state: EmployeeState,
+  state: EmployeesState,
   action: EmployeeActionTypes
-): EmployeeState {
+): EmployeesState {
   switch (action.type) {
     case EmployeeActions.EMPLOYEES_FETCHING: {
       return {
@@ -29,7 +29,7 @@ export function employeesReducer(
     case EmployeeActions.EMPLOYEES_FETCHED: {
       return {
         ...(state || {}),
-        ...action.payload as EmployeeState,
+        ...action.payload,
         contentState: LoadingState.Loaded
       };
     }

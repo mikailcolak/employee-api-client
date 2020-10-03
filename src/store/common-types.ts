@@ -1,7 +1,7 @@
 export interface PagedData<T> {
-  itemsPerPage?: Number,
-  page?: Number,
-  total?: Number,
+  itemsPerPage: number,
+  page: number,
+  total: number,
   items: Array<T>
 }
 
@@ -10,4 +10,9 @@ export enum LoadingState {
   Loading = "Loading",
   Loaded = "Loaded",
   CouldNotBeLoaded = "CouldNotBeLoaded",
+}
+
+export interface Loadable {
+  contentState: LoadingState,
+  error?: string,
 }

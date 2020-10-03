@@ -1,5 +1,5 @@
 import {
-  EmployeeState,
+  EmployeesState,
   EmployeeActions,
   EmployeeActionTypes,
   Employee
@@ -10,43 +10,49 @@ import { LoadingState } from "../common-types";
 import axios from "axios";
 import config from "../../config";
 
-const getEmployeesByCompanyId = (companyId: Number, page: Number = 0, itemsPerPage: Number = 10) =>
+const getEmployeesByCompanyId = (companyId: number, page: number = 0, itemsPerPage: number = 10) =>
   axios.get(`${config.apiEndpoint}employees/by-company-id/${companyId}?size=${itemsPerPage}&page=${page}`);
 
 const count = () =>
   axios.get(`${config.apiEndpoint}employees/count`);
 
-function employeesFetched(payload: EmployeeState): EmployeeActionTypes {
+function employeesFetched(payload: EmployeesState): EmployeeActionTypes {
   return {
     type: EmployeeActions.EMPLOYEES_FETCHED,
     payload,
   };
 }
 
-function employeesFetching(companyId: Number): EmployeeActionTypes {
+function employeesFetching(companyId: number): EmployeeActionTypes {
   return {
     type: EmployeeActions.EMPLOYEES_FETCHING,
     payload: {
       items: [],
       companyId,
-      contentState: LoadingState.Loading
+      contentState: LoadingState.Loading,
+      itemsPerPage: 10,
+      page: 0,
+      total: 0,
     },
   };
 }
 
-function employeesCouldNotBeFecthed(companyId: Number, error: String): EmployeeActionTypes {
+function employeesCouldNotBeFecthed(companyId: number, error: string): EmployeeActionTypes {
   return {
     type: EmployeeActions.EMPLOYEES_FETCH_FAILED,
     payload: {
       items: [],
       companyId,
       contentState: LoadingState.CouldNotBeLoaded,
-      error
+      error,
+      itemsPerPage: 10,
+      page: 0,
+      total: 0,
     },
   };
 }
 
-export const fetchEmployees = (companyId: Number, page: Number = 0, itemsPerPage: Number = 10): ThunkAction<
+export const fetchEmployeesAction = (companyId: number, page: number = 0, itemsPerPage: number = 10): ThunkAction<
   void,
   EmployeeActionTypes,
   unknown,
@@ -61,7 +67,7 @@ export const fetchEmployees = (companyId: Number, page: Number = 0, itemsPerPage
       dispatch(employeesCouldNotBeFecthed(companyId, response.statusText));
       return;
     }
-    let payload: EmployeeState = {
+    let payload: EmployeesState = {
       companyId,
       contentState: LoadingState.Loaded,
       items: response.data.content.map((e: Employee): Employee => ({
@@ -85,8 +91,8 @@ export const fetchEmployees = (companyId: Number, page: Number = 0, itemsPerPage
 };
 
 // eslint-disable-next-line
-function mockApiCall(companyId: Number) {
-  return new Promise<EmployeeState>((r) => {
+function mockApiCall(companyId: number) {
+  return new Promise<EmployeesState>((r) => {
     setTimeout(
       () =>
         r({
@@ -102,7 +108,8 @@ function mockApiCall(companyId: Number) {
             address: "TEST1_ADDRESS",
             email: "test1@employeeapi.com",
             salary: 4523.42,
-            companyId: 1
+            companyId: 1,
+            contentState: LoadingState.Loaded
           }]
         }),
       1000
