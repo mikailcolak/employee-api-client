@@ -1,74 +1,74 @@
-import React from "react";
-import logo from './logo.svg';
+import React, { useEffect, useState } from "react";
 import './App.css';
 
 import { connect, ConnectedProps } from "react-redux";
-import { fetchCompanies } from "./store/company/actions";
+import { createCompanyAction, fetchCompaniesAction } from "./store/company/actions";
 import { AppState } from "./store";
-import { Company } from "./store/company/types";
+import { Company, CompaniesState } from "./store/company/types";
 import { LoadingState } from "./store/common-types";
-import { Employee } from "./store/employee/types";
-import { fetchEmployees } from "./store/employee/actions";
+import { fetchEmployeesAction } from "./store/employee/actions";
+import MainLayout from "./layouts/main";
+import { CompanyList } from "./components/company-list";
+import { EmployeeList } from "./components/employee-list";
+import { EmployeesState } from "./store/employee/types";
 
-const mapStateToProps = (state: AppState) => ({
-    companies: state.content.companies
+const mapStateToProps = (state: AppState): {
+  companies: CompaniesState,
+  employees: EmployeesState
+} => ({
+  companies: state.content.companies,
+  employees: state.content.employees,
 });
 
 const mapDispatchToProps = {
-  fetchCompanies: () => fetchCompanies(),
-  fetchEmployees: (companyId: Number) => fetchEmployees(companyId)
+  fetchCompanies: (page: number, itemsPerPage: number) => fetchCompaniesAction(page, itemsPerPage),
+  fetchEmployees: (companyId: number, page: number, itemsPerPage: number) => fetchEmployeesAction(companyId, page, itemsPerPage),
+  createCompany: (company: Company) => createCompanyAction(company),
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type Props = ConnectedProps<typeof connector>;
 
-function App({fetchCompanies, fetchEmployees, companies}:Props) {
+function App({ createCompany, fetchCompanies, fetchEmployees, companies, employees }: Props) {
+
+  var [selectedCompany, setSelectedCompany] = useState<Company | undefined | null>(undefined);
+
+  const _setSelectedCompany = (company: Company | undefined | null) => {
+    if (company && company.id != employees.companyId) {
+      fetchEmployees(company.id, employees.page, employees.itemsPerPage);
+    }
+    setSelectedCompany(company);
+  }
+
+  useEffect(() => {
+    // fetchCompanies(companies.page || 0, companies.itemsPerPage || 0);
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload. HOT.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-
-        {
-          companies.contentState === LoadingState.NotLoaded
-          ? <button onClick={fetchCompanies}>Load Companies</button>
-          : companies.contentState === LoadingState.Loading
-            ? <div>Please wait while companies loading.</div>
-            : companies.contentState === LoadingState.CouldNotBeLoaded
-              ? <div>An unexpected error occured please check this out: {companies.error}</div>
-              : companies.items.map((company: Company, index: Number) => (
-                <div key={`company_${index}`}>
-                  {company.id} - {company.name}
-                  {
-                    company.employees.contentState === LoadingState.NotLoaded
-                    ? <button onClick={() => fetchEmployees(company.id)}>Load Employees</button>
-                    : company.employees.contentState === LoadingState.Loading
-                      ? <div>Please wait while employees loading.</div>
-                      : company.employees.contentState === LoadingState.CouldNotBeLoaded
-                        ? <div>An unexpected error occured please check this out: {company.employees.error}</div>
-                        : company.employees.items.map((employee: Employee, index: Number) => (
-                          <div key={`employee_${index}`}>
-                            {employee.id} - {employee.name} - {employee.surname}
-                          </div>
-                        ))
-                  }
-
-                </div>
-              ))
-        }
-      </header>
-    </div>
+    <MainLayout>
+      <div className="two-column">
+        <div className="left-column">
+          <CompanyList
+            companies={companies}
+            companyChanged={_setSelectedCompany}
+            selectedCompany={selectedCompany}
+            loadCompanies={fetchCompanies}
+            createCompany={createCompany}
+          />
+        </div>
+        <div className="right-column">
+          {
+            selectedCompany && employees.contentState == LoadingState.Loaded &&
+            <EmployeeList
+              company={selectedCompany}
+              employees={employees}
+              loadEmployees={(page: number, itemsPerPage: number) => fetchEmployees(selectedCompany?.id || 0, page, itemsPerPage)}
+            />
+          }
+        </div>
+      </div>
+    </MainLayout>
   );
 }
 
