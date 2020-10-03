@@ -1,0 +1,15 @@
+.block {
+  border: .0625em solid #aaa;
+  background: #f6f6f6;
+  border-radius: .225em;
+  padding: .625em;
+}
+
+.block-header {
+  font-weight: bold;
+  background-color: #eee;
+  padding: .625em;
+  border-radius: .225em;
+  margin: -.625em;
+  margin-bottom: .625em;
+}
