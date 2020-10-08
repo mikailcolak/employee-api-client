@@ -174,16 +174,16 @@ const EmployeeListComponent = ({
                   employeeCrudState.handlerName === "remove"
                     ? <>
                       <button
-                        key="saveEmpployee"
+                        key="saveEmployee"
                         id="saveEmployee"
                         onClick={() => {
                           saveAndClear(employeeCrudState);
                         }}
-                      >Delete Employee</button>
+                      >Delete Company</button>
                     </>
                     : <>
                       <button
-                        key="saveEmpployee"
+                        key="saveEmployee"
                         id="saveEmployee"
                         onClick={() => {
                           save(employeeCrudState);

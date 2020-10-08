@@ -148,25 +148,25 @@ export const CompanyListComponent = ({
                   companyCrudState.handlerName === "remove"
                     ? <>
                       <button
-                        key="saveEmpployee"
-                        id="saveEmployee"
+                        key="saveCompany"
+                        id="saveCompany"
                         onClick={() => {
                           saveAndClear(companyCrudState);
                         }}
-                      >Delete Employee</button>
+                      >Delete Company</button>
                     </>
                     : <>
                       <button
-                        key="saveEmpployee"
-                        id="saveEmployee"
+                        key="saveCompany"
+                        id="saveCompany"
                         onClick={() => {
                           save(companyCrudState);
                         }}
                       >Save</button>
                       <span className="vr-spacer" />
                       <button
-                        key="saveEmpployeeAndClose"
-                        id="saveEmpployeeAndClose"
+                        key="saveCompanyAndClose"
+                        id="saveCompanyAndClose"
                         onClick={() => {
                           saveAndClear(companyCrudState);
                         }}
