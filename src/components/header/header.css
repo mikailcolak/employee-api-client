@@ -9,4 +9,5 @@
   align-items: center;
   padding: .625em;
   color: var(--light-text);
+  z-index: 1;
 }
