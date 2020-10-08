@@ -1,16 +1,23 @@
-.company-list > ul {
+.company-list ul {
   margin: 0;
   padding: 0;
   list-style: none;
+  background-color: white;
+  border-radius: .250em;
+  border: 0.0625em solid #ccc;
 }
 
-.company-list > ul > li > a {
+.company-list ul > li > a {
   display: block;
   cursor: pointer;
   padding: .3125em;
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 100ms ease-in-out, background-color 100ms ease-in-out;
+  border-radius: .250em;
 }
 
-.company-list > ul > li.selected > a {
+.company-list ul > li.selected > a {
   background-color: var(--primary);
   color: var(--light-text);
 }
