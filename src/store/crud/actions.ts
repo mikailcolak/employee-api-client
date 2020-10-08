@@ -86,7 +86,8 @@ export const saveAction = <T>(state: CrudState<T>, clearStateAfterSave: boolean 
       dispatch(saved<T>({
         ...state,
         targetName: state.targetName,
-        handlerName: "all"
+        handlerName: "all",
+        target: saveResponse.data
       }));
     } else {
       dispatch(saved<T>({
