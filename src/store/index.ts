@@ -8,22 +8,33 @@ import {
 } from "./runtime/reducers";
 import { companyReducer, initialState as companiesInitialState } from "./company/reducers";
 import { employeesReducer, initialState as employeesInitialState } from "./employee/reducers";
+import { RuntimeState } from "./runtime/types";
+import { CompaniesState } from "./company/types";
+import { EmployeesState } from "./employee/types";
 
-export type AppState = ReturnType<typeof rootReducer>;
+interface AppStateContent {
+  readonly companies: CompaniesState;
+  readonly employees: EmployeesState;
+}
 
-const rootReducer: Reducer = combineReducers({
+export interface AppState {
+  readonly runtime: RuntimeState;
+  readonly content: AppStateContent;
+}
+
+const rootReducer: Reducer = combineReducers<AppState>({
   runtime: runtimeReducer,
-  content: combineReducers({
+  content: combineReducers<AppStateContent>({
     companies: companyReducer,
     employees: employeesReducer,
   }),
 });
 
-export const appInitialState: AppState = {
+export const appInitialState: AppState= {
   runtime: runtimeInitialState,
   content: {
     companies: companiesInitialState,
-    employees: employeesInitialState
+    employees: employeesInitialState,
   }
 };
 
