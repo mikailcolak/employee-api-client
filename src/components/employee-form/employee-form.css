@@ -1,0 +1,17 @@
+.employee-form div {
+  font-size: 0;
+  margin-bottom: .625rem;
+}
+.employee-form div label {
+  font-size: 1rem;
+  width: 5.625em;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.employee-form div input,
+.employee-form div textarea {
+  font-size: 1rem;
+  width: calc(100% - 5.625em);
+  display: inline-block;
+}

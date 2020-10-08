@@ -1,0 +1,17 @@
+.company-form div {
+  font-size: 0;
+  margin-bottom: .625rem;
+}
+.company-form div label {
+  font-size: 1rem;
+  width: 5.625em;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.company-form div input,
+.company-form div textarea {
+  font-size: 1rem;
+  width: calc(100% - 5.625em);
+  display: inline-block;
+}
