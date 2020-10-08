@@ -1,26 +1,29 @@
 import { LoadingState } from "../common-types";
-import { employeesReducer } from "../employee/reducers";
-import { EmployeeActions, EmployeeActionTypes, EmployeesState } from "../employee/types";
+import { crudReducerProvider, initialStateProvider } from "../crud/reducers";
 import {
   CompanyActions,
   CompaniesState,
   CompanyActionTypes,
+  Company,
 } from "./types";
+
+const companyCrudReducer = crudReducerProvider<Company>('company');
 
 export const initialState: CompaniesState = {
   contentState: LoadingState.NotLoaded,
   items: [],
   page: 0,
   itemsPerPage: 10,
-  total: 0
+  total: 0,
+  crud: initialStateProvider<Company>(),
 };
 
 export function companyReducer(
-  state: CompaniesState,
-  action: CompanyActionTypes | EmployeeActionTypes
+  state: CompaniesState = initialState,
+  {type, payload}: CompanyActionTypes
 ): CompaniesState {
 
-  switch (action.type) {
+  switch (type) {
     case CompanyActions.COMPANIES_FETCHING: {
       return {
         ...(state || {}),
@@ -31,13 +34,13 @@ export function companyReducer(
     case CompanyActions.COMPANIES_FETCHED: {
       return {
         ...(state || {}),
-        ...action.payload as CompaniesState,
+        ...payload as CompaniesState,
         contentState: LoadingState.Loaded
       };
     }
 
     case CompanyActions.COMPANIES_FETCH_FAILED: {
-      let error: string = action.payload.error || "Unknown error.";
+      let error: string = payload.error || "Unknown error.";
 
       return {
         ...(state || {}),
@@ -47,6 +50,38 @@ export function companyReducer(
     }
 
     default:
+      if ((type as string).startsWith("COMPANY_CRUD_")) {
+        let crud = companyCrudReducer(state.crud, {type: (type as any), payload: (payload as any)});
+        const company = crud.target;
+        let items = state.items;
+
+        if ((type as string).endsWith("_CRUD_SAVED")) {
+          const currentCompany = company ? state.items.find(c => c.id === company.id) : null;
+          let index = currentCompany ? state.items.findIndex(c => c.id === currentCompany.id) : -1;
+
+          if (index !== -1 && currentCompany) {
+            items = [
+              ...items.slice(0, index),
+              ...(payload.crud?.handlerName !== "remove" ? [{
+                ...currentCompany,
+                ...company,
+              }] : []),
+              ...items.slice(index+1)
+            ];
+          }
+
+          if (payload.crud?.handlerName === "remove") {
+            crud.target = undefined;
+          }
+        }
+
+        return {
+          ...(state || {}),
+          items,
+          crud,
+        }
+      }
+
       return {...state || {}};
   }
 }

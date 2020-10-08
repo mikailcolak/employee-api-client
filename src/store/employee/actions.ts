@@ -7,14 +7,12 @@ import {
 import { ThunkAction } from "redux-thunk";
 import { Action } from "redux";
 import { LoadingState } from "../common-types";
-import axios from "axios";
-import config from "../../config";
-
-const getEmployeesByCompanyId = (companyId: number, page: number = 0, itemsPerPage: number = 10) =>
-  axios.get(`${config.apiEndpoint}employees/by-company-id/${companyId}?size=${itemsPerPage}&page=${page}`);
-
-const count = () =>
-  axios.get(`${config.apiEndpoint}employees/count`);
+import {
+  allByCompanyId,
+  employeeCountByCompanyId,
+  averageSalaryByCompanyId,
+} from "../../api/employee";
+import { initialStateProvider } from "../crud/reducers";
 
 function employeesFetched(payload: EmployeesState): EmployeeActionTypes {
   return {
@@ -33,6 +31,8 @@ function employeesFetching(companyId: number): EmployeeActionTypes {
       itemsPerPage: 10,
       page: 0,
       total: 0,
+      averageSalary: 0,
+      crud: initialStateProvider<Employee>(),
     },
   };
 }
@@ -48,6 +48,8 @@ function employeesCouldNotBeFecthed(companyId: number, error: string): EmployeeA
       itemsPerPage: 10,
       page: 0,
       total: 0,
+      averageSalary: 0,
+      crud: initialStateProvider<Employee>(),
     },
   };
 }
@@ -60,15 +62,17 @@ export const fetchEmployeesAction = (companyId: number, page: number = 0, itemsP
 > => async (dispatch) => {
   dispatch(employeesFetching(companyId));
   try {
-    let { data: { value: total } } = await count();
-    let response = await getEmployeesByCompanyId(companyId, page, itemsPerPage);
+    let { data: { value: total } } = await employeeCountByCompanyId(companyId);
+    let { data: { value: averageSalary }} = await averageSalaryByCompanyId(companyId);
+    let response = await allByCompanyId(companyId, page, itemsPerPage);
 
     if (response.status !== 200) {
       dispatch(employeesCouldNotBeFecthed(companyId, response.statusText));
       return;
     }
-    let payload: EmployeesState = {
+    let payload = {
       companyId,
+      averageSalary,
       contentState: LoadingState.Loaded,
       items: response.data.content.map((e: Employee): Employee => ({
         id: e.id,
@@ -84,35 +88,8 @@ export const fetchEmployeesAction = (companyId: number, page: number = 0, itemsP
       total
     }
 
-    dispatch(employeesFetched(payload));
+    dispatch(employeesFetched(payload as EmployeesState));
   } catch (err) {
     dispatch(employeesCouldNotBeFecthed(companyId, err));
   }
 };
-
-// eslint-disable-next-line
-function mockApiCall(companyId: number) {
-  return new Promise<EmployeesState>((r) => {
-    setTimeout(
-      () =>
-        r({
-          contentState: LoadingState.Loaded,
-          page: 0,
-          itemsPerPage: 10,
-          total: 1,
-          companyId: companyId,
-          items: [{
-            id: 1,
-            name: "TEST1",
-            surname: "TEST1_SURNAME",
-            address: "TEST1_ADDRESS",
-            email: "test1@employeeapi.com",
-            salary: 4523.42,
-            companyId: 1,
-            contentState: LoadingState.Loaded
-          }]
-        }),
-      1000
-    );
-  });
-}

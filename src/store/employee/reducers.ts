@@ -1,9 +1,13 @@
 import { LoadingState } from "../common-types";
+import { crudReducerProvider, initialStateProvider } from "../crud/reducers";
 import {
   EmployeeActions,
   EmployeesState,
   EmployeeActionTypes,
+  Employee
 } from "./types";
+
+const employeeCrudReducer = crudReducerProvider<Employee>('employee');
 
 export const initialState: EmployeesState = {
   companyId: 0,
@@ -11,14 +15,16 @@ export const initialState: EmployeesState = {
   page: 0,
   itemsPerPage: 10,
   contentState: LoadingState.NotLoaded,
-  total: 0
+  total: 0,
+  averageSalary: 0,
+  crud: initialStateProvider<Employee>()
 };
 
 export function employeesReducer(
-  state: EmployeesState,
-  action: EmployeeActionTypes
+  state: EmployeesState = initialState,
+  { type, payload }: EmployeeActionTypes
 ): EmployeesState {
-  switch (action.type) {
+  switch (type) {
     case EmployeeActions.EMPLOYEES_FETCHING: {
       return {
         ...(state || {}),
@@ -29,13 +35,13 @@ export function employeesReducer(
     case EmployeeActions.EMPLOYEES_FETCHED: {
       return {
         ...(state || {}),
-        ...action.payload,
+        ...payload,
         contentState: LoadingState.Loaded
       };
     }
 
     case EmployeeActions.EMPLOYEES_FETCH_FAILED: {
-      let error = action.payload.toString() || "Unknown error.";
+      let error = payload.error || "Unknown error.";
 
       return {
         ...(state || {}),
@@ -45,6 +51,13 @@ export function employeesReducer(
     }
 
     default:
+      if ((type as string).startsWith("EMPLOYEE_CRUD_")) {
+        return {
+          ...(state || {}),
+          crud: employeeCrudReducer(state.crud, {type: (type as any), payload: (payload as any)})
+        }
+      }
+
       return state || null;
   }
 }

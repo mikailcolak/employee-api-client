@@ -1,4 +1,5 @@
 import { Loadable, PagedData } from "../common-types";
+import { CrudState } from "../crud/types";
 
 export interface Employee {
   id: number,
@@ -15,7 +16,9 @@ export interface EmployeeState extends Loadable, Employee {
 }
 
 export interface EmployeesState extends Loadable, PagedData<EmployeeState> {
-  companyId: number,
+  companyId: number;
+  averageSalary: number;
+  crud: CrudState<Employee>;
 }
 
 export enum EmployeeActions {
