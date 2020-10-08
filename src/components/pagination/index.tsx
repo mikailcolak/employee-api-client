@@ -26,20 +26,25 @@ export const Pagination = ({
 
   return (
     <div className="pagination">
-      {page > 0 && <a onClick={() => onPageChange(page - 1)}>‹</a>}
+      {page > 0 && <a href="prev" onClick={e => { onPageChange(page - 1); e.preventDefault(); }}>‹</a>}
       {
         showPageNumbers &&
         Array.from(Array(totalPage))
           .map((_, i) => (
             <a
-              href=""
-              onClick={e => {onPageChange(i); e.preventDefault();}}
-              className={page == i ? "active" : undefined}
+              href={`page_${i + 1}`}
+              onClick={e => {
+                if (i !== page) {
+                  onPageChange(i);
+                }
+                e.preventDefault();
+              }}
+              className={page === i ? "active" : undefined}
               key={`p_${i}`}>{i + 1}</a>
           ))
       }
-      {(page + 1) < totalPage && <a onClick={() => onPageChange(page + 1)}>›</a>}
-      {showPageIndicator && <span>{page+1}/{totalPage}</span>}
+      {(page + 1) < totalPage && <a href="next" onClick={e => { onPageChange(page + 1); e.preventDefault(); }}>›</a>}
+      {showPageIndicator && <span>{page + 1}/{totalPage}</span>}
     </div>
   )
 };
