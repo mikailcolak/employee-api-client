@@ -20,3 +20,9 @@ body {
   height: .625em;
   display: block;
 }
+
+.vr-spacer {
+  width: .625em;
+  display: inline-block;
+}
+
