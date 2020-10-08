@@ -30,3 +30,18 @@ body {
   box-sizing: border-box;
 }
 
+button {
+  border: .0625rem solid #555;
+  display: inline-block;
+  vertical-align: middle;
+  background: #ccc;
+  box-shadow: inset 0em 0.2em 0.25em #fefefe;
+  border-radius: .250em;
+  transition: background-color 200ms ease-in-out, transform 200ms ease-in-out;
+  cursor: pointer;
+}
+
+button:hover,
+button:active {
+  background-color: #fff;
+}
