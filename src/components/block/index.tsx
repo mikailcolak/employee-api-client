@@ -3,19 +3,25 @@ import { classNameCompiler } from '../../utils';
 import './block.css';
 
 interface BlockProperties {
-  title?: string,
+  title?: JSX.Element,
   className?: Array<string> | string,
-  footer?: React.ReactNode
+  footer?: JSX.Element
 }
 
 export const Block = ({title, className, children, footer}: React.PropsWithChildren<BlockProperties>) => (
   <div className={classNameCompiler(className, "block")}>
     {title && (
       <div className="block-header">
-      <span>{title}</span>
-    </div>
+        {title}
+      </div>
     )}
-    {children}
-    {footer}
+    <div className="block-body">
+      {children}
+    </div>
+    {footer && (
+      <div className="block-footer">
+        {footer}
+      </div>
+    )}
   </div>
 );
