@@ -1,38 +1,39 @@
-import React, { EventHandler, SyntheticEvent } from 'react';
+import React, { EventHandler, SyntheticEvent, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { classNameCompiler } from '../../utils';
 import { Block } from '../block';
+import './modal.css';
 
 interface ModalButtonProperties {
-  id: number | string,
-  disabled: boolean,
-  style: React.StyleHTMLAttributes<HTMLButtonElement>,
+  id?: number | string,
+  disabled?: boolean,
+  style?: React.StyleHTMLAttributes<HTMLButtonElement>,
   className?: string,
   onClick: EventHandler<SyntheticEvent<HTMLButtonElement, MouseEvent>>
 }
 
 interface ModalProperties {
-  title?: string,
-  buttons?: Array<typeof ModalButton>,
-}
-
-export const ModalButton = ({ id, children, disabled, style, className, onClick }: React.PropsWithChildren<ModalButtonProperties>) => {
-  return (
-    <button onClick={onClick} disabled={disabled} style={style} className={classNameCompiler(className)}>
-      {children}
-    </button>
-  );
+  title?: JSX.Element,
+  buttons?: JSX.Element,
 }
 
 export const Modal = ({ title, children, buttons }: React.PropsWithChildren<ModalProperties>) => {
 
+  useEffect(() => {
+    document.querySelector('html')?.classList.add('modal-visible');
+    return () => {
+      document.querySelector('html')?.classList.remove('modal-visible');
+    }
+  })
+
   return createPortal(
-    <Block title={title} footer={buttons}>
-      {children}
-    </Block>,
+    (
+      <div className="modal">
+        <Block title={<>{title}</>} footer={buttons} className="modal-content">
+          {children}
+        </Block>
+      </div>
+    ),
     window.document.body
   );
 
 }
-
-Modal.prototype.activeModalStack = [] as Array<typeof Modal>;
